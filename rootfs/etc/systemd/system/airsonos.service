@@ -1,0 +1,11 @@
+[Unit]
+Description=Airsonos
+
+[Service]
+ExecStart=/usr/bin/airsonos \
+    -x '/config/airsonos.xml' \
+    -d 'all=debug' \
+    -l "${LATENCY_RTP}:${LATENCY_HTTP}"
+
+[Install]
+WantedBy=multi-user.target
