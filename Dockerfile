@@ -8,10 +8,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 COPY rootfs /
 
 ARG BUILD_ARCH=amd64
-# Download the binary
-RUN apt-get update -y && apt-get install curl -y && \
-    curl https://github.com/hassio-addons/addon-airsonos/raw/main/airsonos/bin/airsonos-${BUILD_ARCH} -o /usr/bin/airsonos && \
-    chmod +x /usr/bin/airsonos && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+COPY bin/airsonos-${BUILD_ARCH} /usr/bin/airsonos
 
-ENTRYPOINT [ "/usr/bin/airsonos", "-x '/config/airsonos.xml'", "-d 'all=debug'", "-l '${LATENCY_RTP}:${LATENCY_HTTP}'" ]
+
+#ENTRYPOINT [ "/usr/bin/airsonos", "-x '/config/airsonos.xml'", "-d 'all=debug'", "-l '${LATENCY_RTP}:${LATENCY_HTTP}'" ]
