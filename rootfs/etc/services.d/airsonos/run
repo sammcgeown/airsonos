@@ -1,0 +1,50 @@
+
+declare -a options
+
+echo 'Starting the AirSonos server...'
+
+# Non-interactive
+options+=(-Z)
+
+# Configuration file
+options+=(-x '/config/airsonos.xml')
+
+# Update configuration file when new devices where detected
+options+=(-I)
+
+# Bind to a specific interface
+# if bashio::config.has_value 'address'; then
+#     options+=(-b "$(bashio::config 'address'):$(bashio::config 'port')")
+# fi
+
+# Find the matching AirSonos log level
+if [[ -z "${LOG_LEVEL}" ]]; then
+    case "${LOG_LEVEL}" in
+        all|trace)
+            options+=(-d 'all=sdebug')
+            ;;
+        debug)
+            options+=(-d 'all=debug')
+            ;;
+        info|notice)
+            options+=(-d 'all=info')
+            ;;
+        warning)
+            options+=(-d 'all=warn')
+            ;;
+        error|fatal|off)
+            options+=(-d 'all=error')
+            ;;
+    esac
+fi
+
+# Set latency
+options+=(-l "${LATENCY_RTP}:${LATENCY_HTTP}")
+
+# Drift mode?
+if [[ "${DRIFT}" = "true" ]]; then
+    options+=(-r)
+fi
+
+# Run the AirSonos server
+exec airsonos "${options[@]}"
